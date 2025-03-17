@@ -32,7 +32,7 @@ body {
 /* 지도 컨테이너 */
 
 #map {
-    height: 500px;
+    height: 700px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -60,4 +60,124 @@ body {
         height: 400px;
         margin-bottom: 2rem;
     }
+}
+
+
+/* 마커 스타일링 */
+
+.custom-div-icon {
+    background: transparent;
+    border: none;
+}
+
+.custom-div-icon div {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.custom-div-icon div:hover {
+    transform: scale(1.2);
+}
+
+
+/* 지각판 레이블 스타일링 */
+
+.plate-label {
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: #FF4081;
+    font-weight: bold;
+    font-size: 14px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+
+/* 지각판 레이블 호버 효과 */
+
+.plate-label:hover {
+    color: #F50057;
+    transform: scale(1.1);
+}
+
+
+/* 테이블 스타일링 */
+
+.table-responsive {
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+    height: 700px !important;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table td,
+.table th {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+
+/* 스크롤바 스타일링 */
+
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+
+/* 컨테이너 크기 조정 */
+
+.container {
+    max-width: 1400px;
+    /* 컨테이너 최대 너비 증가 */
+}
+
+
+/* 푸터 스타일링 */
+
+footer {
+    margin-top: 2rem;
+    padding: 1rem 0;
+    border-top: 1px solid #dee2e6;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+
+/* 메인 컨텐츠 최소 높이 설정 */
+
+main {
+    min-height: calc(100vh - 200px);
+    /* 푸터가 항상 아래에 위치하도록 */
+    padding-bottom: 2rem;
 }

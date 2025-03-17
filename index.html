@@ -23,8 +23,7 @@
         <div class="nav-tabs">
             <button class="tab-btn active" data-tab="volcano">Volcano</button>
             <button class="tab-btn" data-tab="tsunami">Tsunami</button>
-            <button class="tab-btn" data-tab="typhoon">Typhoon</button>
-            <button class="tab-btn" data-tab="tornado">Tornado</button>
+            <button class="tab-btn" data-tab="earthquake">Earthquake</button>
         </div>
     </header>
 
@@ -38,13 +37,15 @@
 
             <!-- 차트 영역 -->
             <div class="col-md-6">
-                <canvas id="chart"></canvas>
+                <div id="chartContainer">
+                    <canvas id="chart"></canvas>
+                </div>
             </div>
         </div>
     </main>
 
     <!-- 푸터 -->
-    <footer class="container mt-4">
+    <footer class="container">
         <p class="text-end">Made by 오승민</p>
     </footer>
 
