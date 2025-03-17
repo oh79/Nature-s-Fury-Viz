@@ -31,12 +31,12 @@
     <main class="container">
         <div class="row">
             <!-- 지도 영역 -->
-            <div class="col-md-6">
+            <div class="col-md-6 map-container">
                 <div id="map"></div>
             </div>
 
             <!-- 차트 영역 -->
-            <div class="col-md-6">
+            <div class="col-md-6 chart-container">
                 <div id="chartContainer">
                     <canvas id="chart"></canvas>
                 </div>
@@ -46,7 +46,15 @@
 
     <!-- 푸터 -->
     <footer class="container">
-        <p class="text-end">Made by 오승민</p>
+        <div class="footer-content">
+            <p class="copyright">© 2025 오승민. All Rights Reserved.</p>
+            <p class="social-links">
+                <a href="https://github.com/oh79" target="_blank" title="GitHub"><i class="fab fa-github"></i> GitHub</a>
+                <span class="separator">|</span>
+                <a href="https://oh79.tistory.com" target="_blank" title="Tistory"><i class="fas fa-blog"></i> Tistory</a>
+            </p>
+            <p class="footer-description">자연재해 데이터 시각화 프로젝트 | Made by 오승민</p>
+        </div>
     </footer>
 
     <!-- 스크립트 -->
@@ -55,6 +63,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <script src="script.js"></script>
+
+    <!-- Font Awesome 추가 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </body>
 
 </html>

@@ -25,7 +25,7 @@ function initMap() {
             [90, 180] // 북동쪽 경계
         ],
         maxBoundsViscosity: 1.0 // 경계에서 튕기는 강도 (0~1)
-    }).setView([10, 0], 1.2); // 위도를 10도로 낮추고, 줌 레벨을 1.2로 설정
+    }).setView([10, 0], 2.5); // 위도를 10도로 낮추고, 줌 레벨을 2.5로 설정
 
     // Stadia Maps의 Alidade Smooth Dark 스타일 적용
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
@@ -252,28 +252,18 @@ function updateChart(data, type) {
     const chartContainer = document.getElementById('chartContainer');
     chartContainer.innerHTML = '';
 
+    const tableContainer = document.createElement('div');
+    tableContainer.className = 'table-responsive';
+
+    const table = document.createElement('table');
+    table.className = 'table table-striped table-hover';
+
+    const thead = document.createElement('thead');
+    thead.className = 'sticky-top bg-white';
+    const headerRow = document.createElement('tr');
+
     if (type === 'earthquake') {
-        // 연도별 그룹화
-        const yearGroups = {};
-        data.forEach(item => {
-            if (!yearGroups[item.year]) {
-                yearGroups[item.year] = [];
-            }
-            yearGroups[item.year].push(item);
-        });
-
-        const tableContainer = document.createElement('div');
-        tableContainer.className = 'table-responsive';
-        tableContainer.style.height = '500px';
-
-        const table = document.createElement('table');
-        table.className = 'table table-striped table-hover';
-
-        // 테이블 헤더
-        const thead = document.createElement('thead');
-        thead.className = 'sticky-top bg-white';
-        const headerRow = document.createElement('tr');
-        ['연도', '순위', '규모', '깊이', '위치', '국가', '쓰나미 발생'].forEach(column => {
+        ['연도', '규모', '위치', '국가', '깊이', '쓰나미 발생'].forEach(column => {
             const th = document.createElement('th');
             th.textContent = column;
             th.style.backgroundColor = '#f8f9fa';
@@ -282,45 +272,26 @@ function updateChart(data, type) {
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
-        // 테이블 본문
         const tbody = document.createElement('tbody');
-        Object.entries(yearGroups).forEach(([year, earthquakes]) => {
-            earthquakes.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.year}</td>
-                    <td>${index + 1}위</td>
-                    <td>${item.magnitude || '-'}</td>
-                    <td>${item.depth || '-'}</td>
-                    <td>${item.location || '-'}</td>
-                    <td>${item.country || '-'}</td>
-                    <td>${item.tsunami === '1' ? '예' : '아니오'}</td>
-                `;
-                tbody.appendChild(row);
-            });
+        data.forEach((item) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="color: ${getYearColor(item.year)}">${item.year}</td>
+                <td style="color: ${getMagnitudeColor(item.magnitude)}">${item.magnitude || '-'}</td>
+                <td>${item.location || '-'}</td>
+                <td>${item.country || '-'}</td>
+                <td>${item.depth || '-'} km</td>
+                <td>${item.tsunami === '1' ? '예' : '아니오'}</td>
+            `;
+            tbody.appendChild(row);
         });
         table.appendChild(tbody);
-
-        tableContainer.appendChild(table);
-        chartContainer.appendChild(tableContainer);
     } else {
-        const tableContainer = document.createElement('div');
-        tableContainer.className = 'table-responsive';
-        tableContainer.style.height = '500px';
-
-        const table = document.createElement('table');
-        table.className = 'table table-striped table-hover';
-
-        const thead = document.createElement('thead');
-        thead.className = 'sticky-top bg-white';
-        const headerRow = document.createElement('tr');
-
-        // 데이터 타입에 따른 컬럼 설정
         let columns;
         if (type === 'volcano') {
-            columns = ['연도', '월', '일', '화산명', '위치', '국가', '화산 유형', 'VEI'];
+            columns = ['연도', 'VEI', '화산명', '위치', '국가', '화산 유형'];
         } else if (type === 'tsunami') {
-            columns = ['연도', '위치', '국가', '지역', '원인', '지진규모', '지진깊이', '쓰나미강도', '피해정도', '사망자'];
+            columns = ['연도', '원인', '지역', '국가', '피해정도', '사망자'];
         }
 
         columns.forEach(column => {
@@ -337,25 +308,19 @@ function updateChart(data, type) {
             const row = document.createElement('tr');
             if (type === 'volcano') {
                 row.innerHTML = `
-                    <td>${item.year || '-'}</td>
-                    <td>${item.month || '-'}</td>
-                    <td>${item.day || '-'}</td>
+                    <td style="color: ${getYearColor(item.year)}">${item.year || '-'}</td>
+                    <td style="color: ${getVEIColor(item.vei)}">${item.vei || '-'}</td>
                     <td>${item.name || '-'}</td>
                     <td>${item.location || '-'}</td>
                     <td>${item.country || '-'}</td>
                     <td>${item.type || '-'}</td>
-                    <td>${item.vei || '-'}</td>
                 `;
             } else if (type === 'tsunami') {
                 row.innerHTML = `
-                    <td>${item.year || '-'}</td>
-                    <td>${item.location || '-'}</td>
-                    <td>${item.country || '-'}</td>
+                    <td style="color: ${getYearColor(item.year)}">${item.year || '-'}</td>
+                    <td style="color: ${getTsunamiCauseColor(item.cause)}">${item.cause || '-'}</td>
                     <td>${item.region || '-'}</td>
-                    <td>${item.cause || '-'}</td>
-                    <td>${item.magnitude || '-'}</td>
-                    <td>${item.depth || '-'}</td>
-                    <td>${item.intensity || '-'}</td>
+                    <td>${item.country || '-'}</td>
                     <td>${item.damage || '-'}</td>
                     <td>${item.deaths || '-'}</td>
                 `;
@@ -363,10 +328,11 @@ function updateChart(data, type) {
             tbody.appendChild(row);
         });
         table.appendChild(tbody);
-
-        tableContainer.appendChild(table);
-        chartContainer.appendChild(tableContainer);
     }
+
+    tableContainer.appendChild(table);
+    chartContainer.appendChild(tableContainer);
+    chartContainer.appendChild(createLegend());
 }
 
 // 지도 초기화
@@ -401,3 +367,154 @@ function setupTabListeners() {
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', init);
+
+// 연도별 색상 함수
+function getYearColor(year) {
+    const year_num = parseInt(year);
+    if (year_num < 1970) return '#2196F3';  // 파랑
+    else if (year_num < 1990) return '#4CAF50';  // 초록
+    else if (year_num < 2010) return '#FFC107';  // 노랑
+    else return '#F44336';  // 빨강
+}
+
+// VEI 색상 함수
+function getVEIColor(vei) {
+    const vei_num = parseInt(vei);
+    if (isNaN(vei_num)) return '#808080';  // 회색 (데이터 없음)
+    if (vei_num <= 2) return '#FFD700';    // 금색 (약함)
+    if (vei_num <= 4) return '#FF4500';    // 주황색 (중간)
+    return '#8B0000';                      // 진한 빨강 (강함)
+}
+
+// 쓰나미 원인별 색상
+function getTsunamiCauseColor(cause) {
+    if (!cause) return '#808080';  // 회색 (데이터 없음)
+    if (cause.includes('Earthquake')) return '#E91E63';  // 분홍 (지진)
+    if (cause.includes('Volcano')) return '#9C27B0';     // 보라 (화산)
+    if (cause.includes('Landslide')) return '#795548';   // 갈색 (산사태)
+    return '#607D8B';  // 회색빛 파랑 (기타)
+}
+
+// 지진 규모별 색상
+function getMagnitudeColor(magnitude) {
+    const mag = parseFloat(magnitude);
+    if (isNaN(mag)) return '#808080';      // 회색 (데이터 없음)
+    if (mag < 6.0) return '#9370DB';       // 보라색 (약한 지진)
+    if (mag < 7.0) return '#4B0082';       // 진한 보라 (중간 지진)
+    if (mag < 8.0) return '#00CED1';       // 청록색 (강한 지진)
+    return '#000080';                      // 진한 남색 (매우 강한 지진)
+}
+
+// 범례 생성 함수
+function createLegend() {
+    const legend = document.createElement('div');
+    legend.className = 'legend collapsed';  // 초기 상태를 collapsed로 설정
+    
+    // 헤더 추가
+    const header = document.createElement('div');
+    header.className = 'legend-header';
+    
+    const title = document.createElement('h5');
+    title.textContent = '범례';
+    
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'legend-toggle';
+    toggleBtn.innerHTML = '▶';  // 닫힌 상태의 아이콘으로 변경
+    toggleBtn.addEventListener('click', (e) => {
+        legend.classList.toggle('collapsed');
+    });
+    
+    header.appendChild(title);
+    header.appendChild(toggleBtn);
+    legend.appendChild(header);
+    
+    // 연도별 범례
+    const yearLegend = document.createElement('div');
+    yearLegend.style.marginBottom = '30px';
+    
+    const yearTitle = document.createElement('h5');
+    yearTitle.textContent = '연도별 구분';
+    yearTitle.style.marginBottom = '15px';
+    yearLegend.appendChild(yearTitle);
+
+    const yearItems = [
+        { color: '#2196F3', label: '1950-1969' },
+        { color: '#4CAF50', label: '1970-1989' },
+        { color: '#FFC107', label: '1990-2009' },
+        { color: '#F44336', label: '2010-2020' }
+    ];
+
+    yearItems.forEach(item => {
+        const legendItem = document.createElement('div');
+        
+        const colorBox = document.createElement('div');
+        colorBox.className = 'color-box';
+        colorBox.style.backgroundColor = item.color;
+        
+        const label = document.createElement('span');
+        label.textContent = item.label;
+        
+        legendItem.appendChild(colorBox);
+        legendItem.appendChild(label);
+        yearLegend.appendChild(legendItem);
+    });
+
+    legend.appendChild(yearLegend);
+
+    // 카테고리별 범례
+    const categoryLegend = document.createElement('div');
+    let categoryItems = [];
+    let categoryTitle = '';
+
+    if (currentTab === 'volcano') {
+        categoryTitle = 'VEI 구분';
+        categoryItems = [
+            { color: '#FFD700', label: 'VEI 0-2 (약함)' },
+            { color: '#FF4500', label: 'VEI 3-4 (중간)' },
+            { color: '#8B0000', label: 'VEI 5+ (강함)' },
+            { color: '#808080', label: '데이터 없음' }
+        ];
+    } else if (currentTab === 'tsunami') {
+        categoryTitle = '원인별 구분';
+        categoryItems = [
+            { color: '#E91E63', label: '지진' },
+            { color: '#9C27B0', label: '화산' },
+            { color: '#795548', label: '산사태' },
+            { color: '#607D8B', label: '기타' },
+            { color: '#808080', label: '데이터 없음' }
+        ];
+    } else if (currentTab === 'earthquake') {
+        categoryTitle = '규모별 구분';
+        categoryItems = [
+            { color: '#9370DB', label: '6.0 미만' },
+            { color: '#4B0082', label: '6.0-6.9' },
+            { color: '#00CED1', label: '7.0-7.9' },
+            { color: '#000080', label: '8.0 이상' },
+            { color: '#808080', label: '데이터 없음' }
+        ];
+    }
+
+    const catTitle = document.createElement('h5');
+    catTitle.textContent = categoryTitle;
+    catTitle.style.marginBottom = '10px';
+    categoryLegend.appendChild(catTitle);
+
+    categoryItems.forEach(item => {
+        const legendItem = document.createElement('div');
+        
+        const colorBox = document.createElement('div');
+        colorBox.className = 'color-box';
+        colorBox.style.backgroundColor = item.color;
+        
+        const label = document.createElement('span');
+        label.textContent = item.label;
+        
+        legendItem.appendChild(colorBox);
+        legendItem.appendChild(label);
+        categoryLegend.appendChild(legendItem);
+    });
+
+    legend.appendChild(categoryLegend);
+
+    return legend;
+}
