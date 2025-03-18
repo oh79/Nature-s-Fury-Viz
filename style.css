@@ -394,25 +394,6 @@ main {
     flex-shrink: 0;
 }
 
-/* 범례 스크롤바 */
-.legend::-webkit-scrollbar {
-    width: 6px;
-}
-
-.legend::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-}
-
-.legend::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 3px;
-}
-
-.legend::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
 .legend-toggle {
     cursor: pointer;
     padding: 5px;

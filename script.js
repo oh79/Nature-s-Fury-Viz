@@ -29,7 +29,6 @@ function initMap() {
 
     // Stadia Maps의 Alidade Smooth Dark 스타일 적용
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
         noWrap: true, // 지도가 반복되지 않도록 설정
         bounds: [
             [-90, -180],
@@ -227,10 +226,7 @@ function updateVisualization(data, type) {
             case 'tsunami':
                 return 'background-color: #2196f3; border-radius: 50%; width: 10px; height: 10px;';
             case 'earthquake':
-                // 모든 지진 마커를 초록색으로 통일
                 return 'background-color: #4caf50; border-radius: 50%; width: 10px; height: 10px;';
-            default:
-                return 'background-color: #9c27b0; border-radius: 50%; width: 10px; height: 10px;';
         }
     };
 

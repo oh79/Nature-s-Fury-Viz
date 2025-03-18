@@ -6,20 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>자연재해 데이터 시각화</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- 부트스트랩 CSS: 반응형 디자인과 기본 UI 컴포넌트 제공 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Leaflet CSS -->
+    <!-- Leaflet CSS: 지도 시각화를 위한 라이브러리 스타일 -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-    <!-- 커스텀 CSS -->
+    <!-- Font Awesome: 아이콘 라이브러리 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- 커스텀 CSS: 사용자 정의 스타일 -->
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <!-- 헤더 -->
     <header class="container mt-4 mb-4">
+        <!-- 제목 -->   
         <h1 class="text-center">Volcano</h1>
+        
+        <!-- 탭 네비게이션: 화산, 쓰나미, 지진 데이터 선택 -->
         <div class="nav-tabs">
             <button class="tab-btn active" data-tab="volcano">Volcano</button>
             <button class="tab-btn" data-tab="tsunami">Tsunami</button>
@@ -27,7 +33,7 @@
         </div>
     </header>
 
-    <!-- 메인 컨텐츠 -->
+    <!-- 메인 컨텐츠: 지도와 데이터 테이블 -->
     <main class="container">
         <div class="row">
             <!-- 지도 영역 -->
@@ -35,7 +41,7 @@
                 <div id="map"></div>
             </div>
 
-            <!-- 차트 영역 -->
+            <!-- 데이터 테이블 영역: 선택된 자연재해 데이터 표시 -->
             <div class="col-md-6 chart-container">
                 <div id="chartContainer">
                     <canvas id="chart"></canvas>
@@ -57,15 +63,18 @@
         </div>
     </footer>
 
-    <!-- 스크립트 -->
+    <!-- 자바스크립트 라이브러리 -->
+    <!-- 부트스트랩 JS: UI 컴포넌트 기능 구현 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Leaflet JS: 지도 라이브러리 -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        
+    <!-- PapaParse: CSV 파싱 라이브러리 -->
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    
+    <!-- 메인 애플리케이션 로직 -->
     <script src="script.js"></script>
-
-    <!-- Font Awesome 추가 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </body>
 
 </html>
