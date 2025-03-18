@@ -74,6 +74,8 @@ async function loadData(dataType) {
 
         Papa.parse(csvData, {
             header: true,
+            dynamicTyping: true, // 자동으로 타입 변환 시도
+            skipEmptyLines: true, // 빈 줄 건너뛰기
             complete: (results) => {
                 let filteredData;
                 if (dataType === 'earthquake') {
@@ -98,17 +100,22 @@ async function loadData(dataType) {
                             return;
                         }
 
-                        // 유효한 연도인지 확인
-                        if (!isNaN(year) && year >= 1950 && year <= 2020) {
+                        // 유효한 연도인지 확인 (범위 확장: 1950년 ~ 2023년)
+                        if (!isNaN(year) && year >= 1950 && year <= 2023) {
                             if (!yearGroups[year]) {
                                 yearGroups[year] = [];
                             }
+                            
+                            // 위도/경도 값을 명시적으로 숫자로 변환하고 유효성 검사
+                            const lat = parseFloat(item.latitude);
+                            const lng = parseFloat(item.longitude);
+                            
                             yearGroups[year].push({
                                 year: year,
                                 magnitude: parseFloat(item.magnitude),
                                 depth: parseFloat(item.depth),
-                                latitude: parseFloat(item.latitude),
-                                longitude: parseFloat(item.longitude),
+                                latitude: !isNaN(lat) ? lat : null,
+                                longitude: !isNaN(lng) ? lng : null,
                                 location: item.location,
                                 country: item.country,
                                 tsunami: item.tsunami,
@@ -117,57 +124,86 @@ async function loadData(dataType) {
                         }
                     });
 
-                    // 각 연도별로 상위 5개 선택
+                    // 각 연도의 모든 데이터 포함
                     filteredData = Object.entries(yearGroups).map(([year, yearData]) => {
-                        // 규모순으로 정렬하고 상위 5개 선택
+                        // 규모순으로 정렬하고 모든 데이터 반환
                         return yearData
-                            .sort((a, b) => (parseFloat(b.magnitude) || 0) - (parseFloat(a.magnitude) || 0))
-                            .slice(0, 5);
+                            .sort((a, b) => (parseFloat(b.magnitude) || 0) - (parseFloat(a.magnitude) || 0));
                     }).flat(); // 2차원 배열을 1차원으로 평탄화
 
-                    // 오름차순 정렬 (1950 -> 2020)
+                    // 지진 데이터는 1995년부터만 필터링
+                    filteredData = filteredData.filter(item => parseInt(item.year) >= 1995);
+
+                    // 오름차순 정렬 (1995 -> 2023)
                     filteredData.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+                    
+                    // 위치 데이터 분석 로깅
+                    const totalItems = filteredData.length;
+                    const itemsWithLocation = filteredData.filter(item => item.latitude !== null && item.longitude !== null).length;
+                    console.log(`지진 데이터: 총 ${totalItems}개 중 ${itemsWithLocation}개에 위치 정보가 있습니다 (${Math.round(itemsWithLocation/totalItems*100)}%)`);
 
                 } else if (dataType === 'volcano') {
                     filteredData = results.data
                         .filter(item => {
                             const year = parseInt(item.Year);
-                            return year >= 1950 && year <= 2020 && !isNaN(year);
+                            return year >= 1950 && year <= 2023 && !isNaN(year); // 범위 확장
                         })
-                        .map(item => ({
-                            year: item.Year,
-                            month: item.Month,
-                            day: item.Day,
-                            name: item.Name,
-                            location: item.Location,
-                            country: item.Country,
-                            latitude: item.Latitude,
-                            longitude: item.Longitude,
-                            type: item.Type,
-                            vei: item.VEI
-                        }))
+                        .map(item => {
+                            // 위도/경도 값을 명시적으로 숫자로 변환하고 유효성 검사
+                            const lat = parseFloat(item.Latitude);
+                            const lng = parseFloat(item.Longitude);
+                            
+                            return {
+                                year: item.Year,
+                                month: item.Month,
+                                day: item.Day,
+                                name: item.Name,
+                                location: item.Location,
+                                country: item.Country,
+                                latitude: !isNaN(lat) ? lat : null,
+                                longitude: !isNaN(lng) ? lng : null,
+                                type: item.Type,
+                                vei: item.VEI
+                            };
+                        })
                         .sort((a, b) => parseInt(a.year) - parseInt(b.year));
+                        
+                    // 위치 데이터 분석 로깅
+                    const totalItems = filteredData.length;
+                    const itemsWithLocation = filteredData.filter(item => item.latitude !== null && item.longitude !== null).length;
+                    console.log(`화산 데이터: 총 ${totalItems}개 중 ${itemsWithLocation}개에 위치 정보가 있습니다 (${Math.round(itemsWithLocation/totalItems*100)}%)`);
                 } else if (dataType === 'tsunami') {
                     filteredData = results.data
                         .filter(item => {
                             const year = parseInt(item.YEAR);
-                            return year >= 1950 && year <= 2020 && !isNaN(year);
+                            return year >= 1950 && year <= 2023 && !isNaN(year); // 범위 확장
                         })
-                        .map(item => ({
-                            year: item.YEAR,
-                            latitude: item.LATITUDE,
-                            longitude: item.LONGITUDE,
-                            location: item.LOCATION_NAME,
-                            country: item.COUNTRY,
-                            region: item.REGION,
-                            cause: item.CAUSE,
-                            magnitude: item.EQ_MAGNITUDE,
-                            depth: item.EQ_DEPTH,
-                            intensity: item.TS_INTENSITY,
-                            damage: item.DAMAGE_TOTAL_DESCRIPTION,
-                            deaths: item.DEATHS_TOTAL_DESCRIPTION
-                        }))
+                        .map(item => {
+                            // 위도/경도 값을 명시적으로 숫자로 변환하고 유효성 검사
+                            const lat = parseFloat(item.LATITUDE);
+                            const lng = parseFloat(item.LONGITUDE);
+                            
+                            return {
+                                year: item.YEAR,
+                                latitude: !isNaN(lat) ? lat : null,
+                                longitude: !isNaN(lng) ? lng : null,
+                                location: item.LOCATION_NAME,
+                                country: item.COUNTRY,
+                                region: item.REGION,
+                                cause: item.CAUSE,
+                                magnitude: item.EQ_MAGNITUDE,
+                                depth: item.EQ_DEPTH,
+                                intensity: item.TS_INTENSITY,
+                                damage: item.DAMAGE_TOTAL_DESCRIPTION,
+                                deaths: item.DEATHS_TOTAL_DESCRIPTION
+                            };
+                        })
                         .sort((a, b) => parseInt(a.year) - parseInt(b.year));
+                        
+                    // 위치 데이터 분석 로깅
+                    const totalItems = filteredData.length;
+                    const itemsWithLocation = filteredData.filter(item => item.latitude !== null && item.longitude !== null).length;
+                    console.log(`쓰나미 데이터: 총 ${totalItems}개 중 ${itemsWithLocation}개에 위치 정보가 있습니다 (${Math.round(itemsWithLocation/totalItems*100)}%)`);
                 }
 
                 updateVisualization(filteredData, dataType);
@@ -199,19 +235,28 @@ function updateVisualization(data, type) {
     };
 
     // 지도에 마커 추가
+    let markersAdded = 0;
     data.forEach(item => {
-        if (item.latitude && item.longitude) {
+        // 위도/경도가 유효한 숫자인지 확인
+        if (item.latitude !== null && item.longitude !== null) {
             const icon = L.divIcon({
                 className: 'custom-div-icon',
                 html: `<div style="${getMarkerStyle(type, item)}"></div>`,
                 iconSize: [10, 10]
             });
 
-            L.marker([item.latitude, item.longitude], { icon: icon })
-                .addTo(map)
-                .bindPopup(createPopupContent(item, type));
+            try {
+                L.marker([item.latitude, item.longitude], { icon: icon })
+                    .addTo(map)
+                    .bindPopup(createPopupContent(item, type));
+                markersAdded++;
+            } catch (error) {
+                console.warn(`마커 추가 실패: ${error.message}`, item);
+            }
         }
     });
+    
+    console.log(`${type} 데이터: 총 ${data.length}개 중 ${markersAdded}개 마커가 지도에 추가되었습니다.`);
 }
 
 // 팝업 내용 생성
@@ -371,10 +416,20 @@ document.addEventListener('DOMContentLoaded', init);
 // 연도별 색상 함수
 function getYearColor(year) {
     const year_num = parseInt(year);
-    if (year_num < 1970) return '#2196F3';  // 파랑
-    else if (year_num < 1990) return '#4CAF50';  // 초록
-    else if (year_num < 2010) return '#FFC107';  // 노랑
-    else return '#F44336';  // 빨강
+    
+    if (currentTab === 'earthquake') {
+        // 지진 데이터는 1995-2023 범위에 맞게 조정
+        if (year_num < 2000) return '#2196F3';     // 파랑 (1995-1999)
+        else if (year_num < 2010) return '#4CAF50'; // 초록 (2000-2009)
+        else if (year_num < 2020) return '#FFC107'; // 노랑 (2010-2019)
+        else return '#F44336';                      // 빨강 (2020-2023)
+    } else {
+        // 화산, 쓰나미 데이터는 기존 범위 유지
+        if (year_num < 1970) return '#2196F3';      // 파랑 (1950-1969)
+        else if (year_num < 1990) return '#4CAF50'; // 초록 (1970-1989)
+        else if (year_num < 2010) return '#FFC107'; // 노랑 (1990-2009)
+        else return '#F44336';                      // 빨강 (2010-2023)
+    }
 }
 
 // VEI 색상 함수
@@ -437,12 +492,23 @@ function createLegend() {
     yearTitle.style.marginBottom = '15px';
     yearLegend.appendChild(yearTitle);
 
-    const yearItems = [
-        { color: '#2196F3', label: '1950-1969' },
-        { color: '#4CAF50', label: '1970-1989' },
-        { color: '#FFC107', label: '1990-2009' },
-        { color: '#F44336', label: '2010-2020' }
-    ];
+    // 현재 탭에 따라 다른 연도 범위 표시
+    let yearItems;
+    if (currentTab === 'earthquake') {
+        yearItems = [
+            { color: '#2196F3', label: '1995-1999' },
+            { color: '#4CAF50', label: '2000-2009' },
+            { color: '#FFC107', label: '2010-2019' },
+            { color: '#F44336', label: '2020-2023' }
+        ];
+    } else {
+        yearItems = [
+            { color: '#2196F3', label: '1950-1969' },
+            { color: '#4CAF50', label: '1970-1989' },
+            { color: '#FFC107', label: '1990-2009' },
+            { color: '#F44336', label: '2010-2023' }
+        ];
+    }
 
     yearItems.forEach(item => {
         const legendItem = document.createElement('div');
@@ -515,6 +581,28 @@ function createLegend() {
     });
 
     legend.appendChild(categoryLegend);
+
+    // 데이터 수집 기간 표시 추가
+    const dataRangeInfo = document.createElement('div');
+    dataRangeInfo.className = 'data-range-info';
+    dataRangeInfo.style.marginTop = '20px';
+    dataRangeInfo.style.borderTop = '1px solid rgba(0,0,0,0.1)';
+    dataRangeInfo.style.paddingTop = '10px';
+    dataRangeInfo.style.fontSize = '12px';
+    dataRangeInfo.style.color = '#666';
+    dataRangeInfo.style.textAlign = 'center';
+    
+    let dataRangeText = '';
+    if (currentTab === 'earthquake') {
+        dataRangeText = '데이터 수집 기간: 1995-2023';
+    } else if(currentTab === 'volcano'){
+        dataRangeText = '데이터 수집 기간: 1950-2023';
+    } else if(currentTab === 'tsunami'){
+        dataRangeText = '데이터 수집 기간: 1950-2020';
+    }
+    
+    dataRangeInfo.textContent = dataRangeText;
+    legend.appendChild(dataRangeInfo);
 
     return legend;
 }

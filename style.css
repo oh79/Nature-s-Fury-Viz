@@ -214,8 +214,8 @@ main {
 
 /* 범례 헤더 스타일링 */
 .legend-header {
-    padding: 12px;
-    margin: -15px -15px 15px -15px;
+    padding: 6px;
+    margin: -15px -8px 15px -8px;
     background: linear-gradient(to right, #f8f9fa, #fff);
     border-radius: 12px 12px 0 0;
     border-bottom: 1px solid rgba(0,0,0,0.1);
