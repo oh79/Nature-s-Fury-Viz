@@ -8,11 +8,7 @@ async function init() {
     // 지도 초기화
     initMap();
 
-    // 데이터 로드 및 시각화
-    await loadData(currentTab);
 
-    // 탭 이벤트 리스너 설정
-    setupTabListeners();
 }
 
 // 지도 초기화
@@ -104,11 +100,11 @@ async function loadData(dataType) {
                             if (!yearGroups[year]) {
                                 yearGroups[year] = [];
                             }
-                            
+
                             // 위도/경도 값을 명시적으로 숫자로 변환하고 유효성 검사
                             const lat = parseFloat(item.latitude);
                             const lng = parseFloat(item.longitude);
-                            
+
                             yearGroups[year].push({
                                 year: year,
                                 magnitude: parseFloat(item.magnitude),
@@ -135,7 +131,7 @@ async function loadData(dataType) {
 
                     // 오름차순 정렬 (1995 -> 2023)
                     filteredData.sort((a, b) => parseInt(a.year) - parseInt(b.year));
-                    
+
                     // 위치 데이터 분석 로깅
                     const totalItems = filteredData.length;
                     const itemsWithLocation = filteredData.filter(item => item.latitude !== null && item.longitude !== null).length;
@@ -151,7 +147,7 @@ async function loadData(dataType) {
                             // 위도/경도 값을 명시적으로 숫자로 변환하고 유효성 검사
                             const lat = parseFloat(item.Latitude);
                             const lng = parseFloat(item.Longitude);
-                            
+
                             return {
                                 year: item.Year,
                                 month: item.Month,
@@ -166,7 +162,7 @@ async function loadData(dataType) {
                             };
                         })
                         .sort((a, b) => parseInt(a.year) - parseInt(b.year));
-                        
+
                     // 위치 데이터 분석 로깅
                     const totalItems = filteredData.length;
                     const itemsWithLocation = filteredData.filter(item => item.latitude !== null && item.longitude !== null).length;
@@ -181,7 +177,7 @@ async function loadData(dataType) {
                             // 위도/경도 값을 명시적으로 숫자로 변환하고 유효성 검사
                             const lat = parseFloat(item.LATITUDE);
                             const lng = parseFloat(item.LONGITUDE);
-                            
+
                             return {
                                 year: item.YEAR,
                                 latitude: !isNaN(lat) ? lat : null,
@@ -198,7 +194,7 @@ async function loadData(dataType) {
                             };
                         })
                         .sort((a, b) => parseInt(a.year) - parseInt(b.year));
-                        
+
                     // 위치 데이터 분석 로깅
                     const totalItems = filteredData.length;
                     const itemsWithLocation = filteredData.filter(item => item.latitude !== null && item.longitude !== null).length;
@@ -251,7 +247,7 @@ function updateVisualization(data, type) {
             }
         }
     });
-    
+
     console.log(`${type} 데이터: 총 ${data.length}개 중 ${markersAdded}개 마커가 지도에 추가되었습니다.`);
 }
 
