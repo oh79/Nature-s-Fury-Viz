@@ -17,6 +17,41 @@
 *   **Build Tool:** Gradle (또는 Maven)
 *   **Logging:** Logback
 
+## 프로젝트 구조
+
+```
+src
+├── main
+│   ├── java
+│   │   └── com/springboot/lab02
+│   │       ├── Lab02Application.java       # 메인 애플리케이션 클래스
+│   │       ├── config
+│   │       │   └── AppConfig.java            # 애플리케이션 설정 (RestTemplate 빈)
+│   │       ├── controller
+│   │       │   ├── Lab2Controller.java       # 메인 목록 페이지 컨트롤러
+│   │       │   └── DetailViewController.java # 상세 정보 페이지 컨트롤러
+│   │       ├── model
+│   │       │   ├── Volcano.java            # 화산 데이터 모델
+│   │       │   └── Earthquake.java         # 지진 데이터 모델
+│   │       └── service
+│   │           ├── DataService.java          # 데이터 서비스 인터페이스
+│   │           ├── VolcanoService.java     # 화산 데이터 서비스 구현체
+│   │           └── EarthquakeService.java  # 지진 데이터 서비스 구현체
+│   └── resources
+│       ├── static
+│       │   └── css
+│       │       ├── lab2.css                # 메인 페이지 스타일
+│       │       └── detailView.css        # 상세 정보 페이지 스타일
+│       └── templates
+│           ├── lab2.html                 # 메인 목록 페이지 템플릿
+│           ├── detailView.html         # 상세 정보 페이지 템플릿
+│           └── fragments
+│               └── common.html           # 공통 UI 프래그먼트
+└── test
+    └── java
+        └── ...                         # 테스트 코드
+```
+
 ## 아키텍처 개요
 
 ```mermaid

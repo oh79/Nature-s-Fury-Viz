@@ -4,10 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 홈 컨트롤러
- * - 단일 책임 원칙(SRP): 메인 페이지와 리다이렉션만 담당
- */
 @Controller
 @Slf4j
 public class HomeController {

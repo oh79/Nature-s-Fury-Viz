@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * 자연재해 데이터 서비스 인터페이스
- * - 의존성 역전 원칙(DIP)을 적용하여 추상화에 의존하도록 함
  */
 public interface DataService<T> {
     
