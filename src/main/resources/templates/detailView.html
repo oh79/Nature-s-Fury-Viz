@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="fragments/common :: header(${title})">
+    <meta charset="UTF-8">
+    <title th:text="${title ?: '상세 정보'}">상세 정보</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- detailView 전용 CSS 링크 추가 -->
+    <link rel="stylesheet" href="/css/detailView.css">
+</head>
+<body>
+    <!-- 네비게이션 바 (팝업용 간소화) -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm mb-4">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">
+                 <i class="fas fa-info-circle me-2"></i>
+                 <span th:text="${title ?: '상세 정보'}">상세 정보</span>
+             </span>
+        </div>
+     </nav>
+
+    <div class="container mt-4 mb-5">
+        <!-- 오류 메시지 표시 -->
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}">
+            오류가 발생했습니다.
+        </div>
+        
+        <div class="detail-card card" th:unless="${error}"> <!-- Bootstrap card 클래스 추가 -->
+            <!-- 카드 헤더 제거 (네비게이션 바로 대체) -->
+            <div class="card-body"> <!-- card-body 추가 -->
+                <!-- Volcano 상세 정보 테이블 -->
+                <table class="table table-bordered table-hover detail-table" th:if="${volcano != null}">
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="property-label">화산 ID</th>
+                            <td class="property-value" th:text="${volcano.vnum ?: '-'}"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">화산명</th>
+                            <td class="property-value" th:text="${volcano.vName ?: '-'}"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">국가</th>
+                            <td class="property-value" th:text="${volcano.country ?: '-'}"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">지역</th>
+                            <td class="property-value" th:text="${volcano.subregion ?: '-'}"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">고도</th>
+                            <td class="property-value">
+                                <span th:text="${volcano.elevationM != null ? volcano.elevationM : '-'}"></span>
+                                <span th:if="${volcano.elevationM != null}"> m</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">유형</th>
+                            <td class="property-value" th:text="${volcano.obsAbbr ?: '-'}"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">위도</th>
+                            <td class="property-value" th:text="${volcano.latitude ?: '-'}"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">경도</th>
+                            <td class="property-value" th:text="${volcano.longitude ?: '-'}"></td>
+                        </tr>
+                        <tr th:if="${volcano.webpage != null}">
+                            <th scope="row" class="property-label">웹페이지</th>
+                            <td class="property-value">
+                                <a th:href="${volcano.webpage}" target="_blank" th:text="${volcano.webpage}"></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <!-- Earthquake 상세 정보 테이블 -->
+                <table class="table table-bordered table-hover detail-table" th:if="${earthquake != null}">
+                     <tbody>
+                        <tr>
+                            <th scope="row" class="property-label">지진 ID</th>
+                            <td class="property-value" th:text="${earthquake.id ?: '-'}"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">규모</th>
+                            <td class="property-value" th:text="${earthquake.magnitude ?: '-'}"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">장소</th>
+                            <td class="property-value" th:text="${earthquake.place ?: '-'}"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">발생시간</th>
+                            <td class="property-value">
+                                <span th:text="${earthquake.time != null ? #dates.format(new java.util.Date(earthquake.time), 'yyyy-MM-dd HH:mm:ss') : '-'}"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">깊이</th>
+                            <td class="property-value">
+                                <span th:text="${earthquake.depth != null ? earthquake.depth : '-'}"></span>
+                                <span th:if="${earthquake.depth != null}"> km</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">위도</th>
+                            <td class="property-value" th:text="${earthquake.latitude ?: '-'}"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="property-label">경도</th>
+                            <td class="property-value" th:text="${earthquake.longitude ?: '-'}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 버튼 섹션 -->
+        <div class="mt-4 text-center">
+            <button type="button" class="btn btn-secondary" onclick="window.close();">
+                 <i class="fas fa-times me-1"></i> 창 닫기
+            </button>
+        </div>
+    </div>
+    
+    <!-- 필수 스크립트 (Bootstrap 등) -->
+    <th:block th:replace="fragments/common :: scripts"></th:block>
+</body>
+</html> 

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="fragments/common :: header(${title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">자연재해 데이터 목록</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/lab2.css">
+</head>
+<body>
+    <!-- 네비게이션 바 -->
+    <nav th:replace="fragments/common :: navbar('data')"></nav>
+
+    <div class="container main-content">
+        <div class="page-header">
+            <h1 class="mb-2" th:text="${title}">자연재해 데이터 목록</h1>
+            <p class="text-muted">전 세계의 화산과 지진 데이터를 확인하세요</p>
+        </div>
+        
+        <!-- 탭 네비게이션 -->
+        <ul class="nav nav-tabs justify-content-center mb-4">
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab=='volcano'} ? 'active'" 
+                   th:href="@{/lab2/volcano}">
+                   <i class="fas fa-volcano me-2"></i>화산 데이터
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab=='earthquake'} ? 'active'" 
+                   th:href="@{/lab2/earthquake}">
+                   <i class="fas fa-seismograph me-2"></i>지진 데이터
+                </a>
+            </li>
+        </ul>
+        
+        <!-- 데이터 테이블 -->
+        <div class="table-responsive">
+            <!-- 화산 데이터 테이블 -->
+            <table class="table data-table table-hover" th:if="${activeTab=='volcano' && pageData != null && !pageData.empty}">
+                <thead>
+                    <tr>
+                        <th>화산 ID</th>
+                        <th>화산명</th>
+                        <th>국가</th>
+                        <th>지역</th>
+                        <th>고도(m)</th>
+                        <th>유형</th>
+                        <th class="text-center">상세정보</th>
+                    </tr>
+                </thead>
+                <tbody id="data-tbody">
+                    <!-- Thymeleaf로 데이터 반복 출력 (변수명 변경) -->
+                    <tr th:each="volcano : ${pageData.content}">
+                        <td th:text="${volcano.vnum ?: '-'}"></td>
+                        <td th:text="${volcano.vName ?: '-'}"></td>
+                        <td th:text="${volcano.country ?: '-'}"></td>
+                        <td th:text="${volcano.subregion ?: '-'}"></td>
+                        <td th:text="${volcano.elevationM ?: '-'}"></td>
+                        <td th:text="${volcano.obsAbbr ?: '-'}"></td>
+                        <td class="text-center">
+                            <!-- 링크를 다시 버튼으로 변경, data-url 속성 추가 -->
+                            <button class="btn btn-sm btn-primary detail-btn" 
+                                    th:attr="data-url=@{/detail/volcano/{id}(id=${volcano.vnum})}">
+                                <i class="fas fa-info-circle me-1"></i>상세보기
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- 지진 데이터 테이블 -->
+            <table class="table data-table table-hover" th:if="${activeTab=='earthquake' && pageData != null && !pageData.empty}">
+                <thead>
+                    <tr>
+                        <th>지진 ID</th>
+                        <th>규모</th>
+                        <th>위치</th>
+                        <th>발생시간</th>
+                        <th>깊이(km)</th>
+                        <th class="text-center">상세정보</th>
+                    </tr>
+                </thead>
+                <tbody id="data-tbody">
+                     <!-- Thymeleaf로 데이터 반복 출력 (변수명 변경) -->
+                    <tr th:each="earthquake : ${pageData.content}">
+                        <td th:text="${earthquake.id ?: '-'}"></td>
+                        <td th:text="${earthquake.magnitude ?: '-'}"></td>
+                        <td th:text="${earthquake.place ?: '-'}"></td>
+                        <td th:text="${earthquake.time != null ? #dates.format(new java.util.Date(earthquake.time), 'yyyy-MM-dd HH:mm:ss') : '-'}"></td>
+                        <td th:text="${earthquake.depth ?: '-'}"></td>
+                        <td class="text-center">
+                             <!-- 링크를 다시 버튼으로 변경, data-url 속성 추가 -->
+                             <button class="btn btn-sm btn-primary detail-btn" 
+                                     th:attr="data-url=@{/detail/earthquake/{id}(id=${earthquake.id})}">
+                                <i class="fas fa-info-circle me-1"></i>상세보기
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- 데이터가 없는 경우 메시지 표시 -->
+            <div class="alert alert-info" th:if="${pageData == null || pageData.empty}">
+                <p class="mb-0"><i class="fas fa-info-circle me-2"></i>표시할 데이터가 없습니다.</p>
+            </div>
+        </div>
+        
+        <!-- 페이징 네비게이션 (Thymeleaf 사용) -->
+        <nav aria-label="페이지 네비게이션" th:if="${pageData != null && pageData.totalPages > 0}">
+            <ul class="pagination justify-content-center">
+                <!-- 처음으로 이동 -->
+                <li class="page-item" th:classappend="${pageData.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/lab2/{type}(type=${activeTab}, page=0, size=${pageData.size})}">&laquo;</a>
+                </li>
+                <!-- 이전 페이지로 이동 -->
+                <li class="page-item" th:classappend="${pageData.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/lab2/{type}(type=${activeTab}, page=${pageData.number - 1}, size=${pageData.size})}" th:if="${!pageData.first}">&lsaquo;</a>
+                    <span class="page-link" th:if="${pageData.first}">&lsaquo;</span>
+                </li>
+                
+                <!-- 페이지 번호 목록 -->
+                <li class="page-item" th:each="pageNum : ${#numbers.sequence( T(java.lang.Math).max(0, pageData.number - 2), T(java.lang.Math).min(pageData.totalPages - 1, pageData.number + 2) )}" 
+                    th:classappend="${pageNum == pageData.number} ? 'active'">
+                    <a class="page-link" th:href="@{/lab2/{type}(type=${activeTab}, page=${pageNum}, size=${pageData.size})}" th:text="${pageNum + 1}"></a>
+                </li>
+                
+                <!-- 다음 페이지로 이동 -->
+                <li class="page-item" th:classappend="${pageData.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/lab2/{type}(type=${activeTab}, page=${pageData.number + 1}, size=${pageData.size})}" th:if="${!pageData.last}">&rsaquo;</a>
+                     <span class="page-link" th:if="${pageData.last}">&rsaquo;</span>
+                </li>
+                <!-- 마지막으로 이동 -->
+                 <li class="page-item" th:classappend="${pageData.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/lab2/{type}(type=${activeTab}, page=${pageData.totalPages - 1}, size=${pageData.size})}">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <!-- 푸터 -->
+    <footer th:replace="fragments/common :: footer"></footer>
+    
+    <th:block th:replace="fragments/common :: scripts"></th:block>
+    
+    <!-- JavaScript: 상세보기 버튼 클릭 시 작은 팝업 창 열기 -->
+    <script th:inline="javascript">
+        // 상세보기 버튼 이벤트 리스너 추가 함수
+        function addDetailButtonListeners() {
+             document.querySelectorAll('.detail-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+                    if (url) {
+                        // 팝업 창 크기 및 속성 설정
+                        const popupWidth = 800;
+                        const popupHeight = 600;
+                        const left = (screen.width / 2) - (popupWidth / 2);
+                        const top = (screen.height / 2) - (popupHeight / 2);
+                        const popupFeatures = `width=${popupWidth},height=${popupHeight},left=${left},top=${top},resizable=yes,scrollbars=yes`;
+                        
+                        // 새 창 열기
+                        window.open(url, 'detailPopup', popupFeatures);
+                    }
+                });
+            });
+        }
+
+        // DOM 로드 완료 후 이벤트 리스너 추가
+        document.addEventListener('DOMContentLoaded', addDetailButtonListeners);
+
+    </script>
+</body>
+</html> 

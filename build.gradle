@@ -17,6 +17,9 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	developmentOnly {
+		extendsFrom annotationProcessor
+	}
 }
 
 repositories {
@@ -30,6 +33,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
