@@ -21,14 +21,14 @@
 
 ```mermaid
 graph TD
-    A[외부 API (USGS)] --> B(Service Layer);
-    B -- 데이터 로드/캐싱 --> C{In-Memory Cache (List)};
-    D[Client (Browser)] --> E(Controller Layer);
+    A[외부 API USGS] --> B(Service Layer);
+    B -- 데이터 로드 캐싱 --> C{In-Memory Cache List};
+    D[Client Browser] --> E(Controller Layer);
     E --> B;
-    B -- 조회/페이징 --> C;
+    B -- 조회 페이징 --> C;
     C -- 데이터 --> B;
-    B -- 데이터 (Page/Object) --> E;
-    E -- Model --> F[View (Thymeleaf)];
+    B -- 데이터 Page Object --> E;
+    E -- Model --> F[View Thymeleaf];
     F --> D;
 ```
 
@@ -51,22 +51,22 @@ graph TD
 sequenceDiagram
     participant Client as Browser
     participant Controller as Lab2Controller
-    participant Service as Volcano/Earthquake Service
-    participant Cache as In-Memory Cache
+    participant Service as Volcano Earthquake Service
+    participant Cache as In Memory Cache
     participant DetailController as DetailViewController
-    participant DetailView as detailView.html
+    participant DetailView as detailView html
 
     Note over Client, Cache: 애플리케이션 시작 시 Service가 API 데이터를 Cache에 로드
 
     Client->>+Controller: GET /lab2/{type}?page=N
     Controller->>+Service: getPagedData(type, pageable)
-    Service->>+Cache: 데이터 조회/정렬/페이징
-    Cache-->>-Service: Page<Data>
-    Service-->>-Controller: Page<Data>
-    Controller->>-Client: lab2.html 렌더링 (테이블 표시)
+    Service->>+Cache: 데이터 조회 정렬 페이징
+    Cache-->>-Service: Page Data
+    Service-->>-Controller: Page Data
+    Controller->>-Client: lab2 html 렌더링 테이블 표시
 
-    Client->>Controller: 상세보기 버튼 클릭 (JavaScript)
-    Note right of Client: window.open('/detail/{type}/{id}', ...)
+    Client->>Controller: 상세보기 버튼 클릭 JavaScript
+    Note right of Client: window open '/detail/{type}/{id}', ...
     Client->>+DetailController: GET /detail/{type}/{id}
     DetailController->>+Service: getDataById(id)
     Service->>+Cache: ID로 데이터 검색
