@@ -1,3 +1,9 @@
+# 실행사진
+![image](https://github.com/user-attachments/assets/136bbf80-d53c-4c6b-b4dc-aa46475a64c3)
+
+## 상세 보기
+![image](https://github.com/user-attachments/assets/4222eb47-4099-450a-8302-d96459bfdac1)
+
 # Nature's Fury Viz - 자연재해 데이터 시각화 프로젝트
 
 전 세계의 화산 및 지진 데이터를 조회하고 상세 정보를 확인할 수 있는 Spring Boot 기반 웹 애플리케이션입니다.
