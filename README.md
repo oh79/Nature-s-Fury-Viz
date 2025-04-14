@@ -91,6 +91,7 @@ graph TD
         B[Controller Layer (Spring MVC)]
         C[Service Layer (Spring Service)]
         D[RestTemplate (HTTP Client)]
+        F[View Layer (Thymeleaf)]
     end
     subgraph External Services
         E[NOAA NCEI API]
@@ -103,7 +104,7 @@ graph TD
     E -- API Response (JSON) --> D;
     D -- Return Response DTO --> C;
     C -- Process Data & Return DTO (PageDTO/Data) --> B;
-    B -- Add Data to Model --> F[View Layer (Thymeleaf)];
+    B -- Add Data to Model --> F;
     F -- Render HTML --> A;
 
     style E fill:#f9f,stroke:#333,stroke-width:2px
