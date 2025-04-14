@@ -85,27 +85,27 @@ src
 ```mermaid
 graph TD
     subgraph Client Tier
-        A[Browser Client]
+        A["Browser Client"]
     end
     subgraph Application Server Tier
-        B[Controller Layer (Spring MVC)]
-        C[Service Layer (Spring Service)]
-        D[RestTemplate (HTTP Client)]
-        F[View Layer (Thymeleaf)]
+        B["Controller Layer (Spring MVC)"]
+        C["Service Layer (Spring Service)"]
+        D["RestTemplate (HTTP Client)"]
+        F["View Layer (Thymeleaf)"]
     end
     subgraph External Services
-        E[NOAA NCEI API]
+        E["NOAA NCEI API"]
     end
 
-    A -- HTTP Request (Search, Detail) --> B;
-    B -- Call Service Method (with SearchCriteria/ID) --> C;
-    C -- Build API URL & Request --> D;
-    D -- HTTP GET --> E;
-    E -- API Response (JSON) --> D;
-    D -- Return Response DTO --> C;
-    C -- Process Data & Return DTO (PageDTO/Data) --> B;
-    B -- Add Data to Model --> F;
-    F -- Render HTML --> A;
+    A -- "HTTP Request (Search, Detail)" --> B;
+    B -- "Call Service Method (with SearchCriteria/ID)" --> C;
+    C -- "Build API URL & Request" --> D;
+    D -- "HTTP GET" --> E;
+    E -- "API Response (JSON)" --> D;
+    D -- "Return Response DTO" --> C;
+    C -- "Process Data & Return DTO (PageDTO/Data)" --> B;
+    B -- "Add Data to Model" --> F;
+    F -- "Render HTML" --> A;
 
     style E fill:#f9f,stroke:#333,stroke-width:2px
 ```
