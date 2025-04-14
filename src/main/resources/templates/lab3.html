@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="fragments/common :: header(${title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">자연재해 데이터 목록</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/lab3.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 -->
+    <nav th:replace="fragments/common :: navbar(${activeTab})"></nav>
+
+    <div class="container main-content mt-5 pt-5">
+        <div class="page-header text-center mb-5">
+            <h1 th:text="${title}">자연재해 데이터 목록</h1>
+            <p class="text-muted">화산, 지진, 쓰나미 발생 정보를 검색하고 확인하세요.</p>
+        </div>
+
+        <!-- 검색 폼 -->
+        <form th:action="@{/lab3/{type}(type=${activeTab})}" method="get" th:object="${criteria}" class="search-form card card-body mb-4 shadow-sm">
+            <h5 class="card-title mb-3"><i class="fas fa-search me-2"></i>검색 조건</h5>
+            <div class="row g-3 align-items-end">
+                <!-- 발생 기간 -->
+                <div class="col-md-6 col-lg-3">
+                    <label for="minDate" class="form-label">발생 기간 (시작)</label>
+                    <input type="date" class="form-control" id="minDate" th:field="*{minDate}">
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label for="maxDate" class="form-label">발생 기간 (종료)</label>
+                    <input type="date" class="form-control" id="maxDate" th:field="*{maxDate}">
+                </div>
+
+                <!-- 화산 검색 조건 -->
+                <th:block th:if="${activeTab == 'volcano'}">
+                    <div class="col-md-6 col-lg-3">
+                        <label for="minElevation" class="form-label">최소 고도(m)</label>
+                        <input type="number" class="form-control" id="minElevation" th:field="*{minElevation}" placeholder="예: 1000">
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <label for="minVei" class="form-label">최소 VEI</label>
+                        <input type="number" class="form-control" id="minVei" th:field="*{minVei}" placeholder="예: 4">
+                    </div>
+                </th:block>
+
+                <!-- 지진 검색 조건 -->
+                <th:block th:if="${activeTab == 'earthquake'}">
+                    <div class="col-md-6 col-lg-3">
+                        <label for="minMagnitude" class="form-label">최소 규모</label>
+                        <input type="number" step="0.1" class="form-control" id="minMagnitude" th:field="*{minMagnitude}" placeholder="예: 6.0">
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <label for="maxMagnitude" class="form-label">최대 규모</label>
+                        <input type="number" step="0.1" class="form-control" id="maxMagnitude" th:field="*{maxMagnitude}" placeholder="예: 9.9">
+                    </div>
+                </th:block>
+
+                <!-- 쓰나미 검색 조건 -->
+                 <th:block th:if="${activeTab == 'tsunami'}">
+                    <div class="col-md-6 col-lg-3">
+                        <label for="minMaximumWaterHeight" class="form-label">최소 최대 수위(m)</label>
+                        <input type="number" step="0.01" class="form-control" id="minMaximumWaterHeight" th:field="*{minMaximumWaterHeight}" placeholder="예: 5.00">
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <label for="minNumberOfRunup" class="form-label">최소 Runups</label>
+                        <input type="number" class="form-control" id="minNumberOfRunup" th:field="*{minNumberOfRunup}" placeholder="예: 10">
+                    </div>
+                </th:block>
+
+                 <!-- 위도 범위 -->
+                <div class="col-md-6 col-lg-3">
+                    <label for="minLatitude" class="form-label">최소 위도</label>
+                    <input type="number" step="any" class="form-control" id="minLatitude" th:field="*{minLatitude}" placeholder="-90 ~ 90">
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label for="maxLatitude" class="form-label">최대 위도</label>
+                    <input type="number" step="any" class="form-control" id="maxLatitude" th:field="*{maxLatitude}" placeholder="-90 ~ 90">
+                </div>
+                 <!-- 경도 범위 -->
+                <div class="col-md-6 col-lg-3">
+                    <label for="minLongitude" class="form-label">최소 경도</label>
+                    <input type="number" step="any" class="form-control" id="minLongitude" th:field="*{minLongitude}" placeholder="-180 ~ 180">
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label for="maxLongitude" class="form-label">최대 경도</label>
+                    <input type="number" step="any" class="form-control" id="maxLongitude" th:field="*{maxLongitude}" placeholder="-180 ~ 180">
+                </div>
+                <!-- 특정 위치/거리 (구현 시 활성화) -->
+                <div class="col-md-4 col-lg-3" hidden>
+                    <label for="latitude" class="form-label">중심 위도</label>
+                    <input type="number" step="any" class="form-control" id="latitude" th:field="*{latitude}">
+                </div>
+                 <div class="col-md-4 col-lg-3" hidden>
+                    <label for="longitude" class="form-label">중심 경도</label>
+                    <input type="number" step="any" class="form-control" id="longitude" th:field="*{longitude}">
+                </div>
+                 <div class="col-md-4 col-lg-3" hidden>
+                    <label for="distance" class="form-label">거리(km)</label>
+                    <input type="number" step="any" class="form-control" id="distance" th:field="*{distance}">
+                </div>
+                 <!-- 검색어 입력 필드 제거 -->
+                <!--
+                <div class="col-md-6 col-lg-3">
+                    <label for="keyword" class="form-label">검색어 (위치, 이름 등)</label>
+                    <input type="text" class="form-control" id="keyword" th:field="*{keyword}" placeholder="위치, 이름 등">
+                </div>
+                -->
+                <!-- 검색 버튼 -->
+                <div class="col-12 col-lg-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-1"></i> 검색하기</button>
+                </div>
+            </div>
+            <!-- 페이지 크기 선택 (옵션) -->
+            <input type="hidden" name="size" th:value="${criteria.size}"> 
+        </form>
+
+        <!-- 탭 네비게이션 -->
+        <ul class="nav nav-tabs justify-content-center mb-4">
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab=='volcano'} ? 'active'" 
+                   th:href="@{/lab3/volcano}">
+                   <i class="fas fa-volcano me-2"></i>화산 데이터
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab=='earthquake'} ? 'active'" 
+                   th:href="@{/lab3/earthquake}">
+                   <i class="fas fa-wave-square me-2"></i>지진 데이터
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab=='tsunami'} ? 'active'" 
+                   th:href="@{/lab3/tsunami}">
+                   <i class="fas fa-water me-2"></i>쓰나미 데이터
+                </a>
+            </li>
+        </ul>
+        
+         <!-- 오류 메시지 표시 -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i> <span th:text="${error}">오류 발생</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <!-- 정보 메시지 표시 (결과 없음 등) -->
+        <div th:if="${message}" class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="fas fa-info-circle me-2"></i> <span th:text="${message}">정보</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <!-- 데이터 테이블 -->
+        <div class="table-responsive shadow-sm rounded">
+            <!-- 화산 데이터 테이블 -->
+            <table id="volcano-table" class="table data-table table-hover mb-0" th:if="${activeTab=='volcano' && pageData != null && pageData.totalItems > 0}">
+                 <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>발생일</th>
+                        <th>위치</th>
+                        <th>국가</th>
+                        <th>화산명</th>
+                        <th>고도(m)</th>
+                        <th>VEI</th>
+                        <th class="text-center">상세정보</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- pageData.items 로 변경, 필드명 수정 -->
+                    <tr th:each="item : ${pageData.items}">
+                        <td th:text="${item.id ?: '-'} "></td>
+                        <td th:text="${item.year + '/' + item.month + '/' + item.day}"></td>
+                        <td th:text="${item.location ?: '-'}"></td>
+                        <td th:text="${item.country ?: '-'}"></td>
+                        <td th:text="${item.name ?: '-'} "></td>
+                        <td th:text="${item.elevation ?: '-'}"></td>
+                        <td th:text="${item.vei ?: '-'}"></td>
+                        <td class="text-center">
+                            <!-- URL 경로 /lab3/detail 로 수정, ID 사용 -->
+                            <button class="btn btn-sm btn-outline-primary detail-btn"
+                                    th:attr="data-url=@{/lab3/detail/volcano/{id}(id=${item.id})}">
+                                <i class="fas fa-external-link-alt me-1"></i> 보기
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- 지진 데이터 테이블 -->
+            <table id="earthquake-table" class="table data-table table-hover mb-0" th:if="${activeTab=='earthquake' && pageData != null && pageData.totalItems > 0}">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>발생 년/월/일</th>
+                        <th>위치</th>
+                        <th>규모</th>
+                        <th>깊이(km)</th>
+                        <th class="text-center">상세정보</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     <!-- pageData.items 로 변경, 필드명 수정 -->
+                    <tr th:each="item : ${pageData.items}">
+                        <td th:text="${item.id ?: '-'} "></td>
+                        <td th:text="${item.year + '/' + item.month + '/' + item.day}"></td>
+                        <td th:text="${item.location ?: '-'}"></td>
+                        <td th:text="${item.magnitude != null ? #numbers.formatDecimal(item.magnitude, 1, 1) : '-'}"></td>
+                        <td th:text="${item.depthKm != null ? #numbers.formatDecimal(item.depthKm, 1, 1) : '-'}"></td>
+                        <td class="text-center">
+                             <!-- URL 경로 /lab3/detail 로 수정 -->
+                             <button class="btn btn-sm btn-outline-primary detail-btn"
+                                     th:attr="data-url=@{/lab3/detail/earthquake/{id}(id=${item.id})}">
+                                <i class="fas fa-external-link-alt me-1"></i> 보기
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+             <!-- 쓰나미 데이터 테이블 (신규 추가) -->
+            <table id="tsunami-table" class="table data-table table-hover mb-0" th:if="${activeTab=='tsunami' && pageData != null && pageData.totalItems > 0}">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>발생 년/월/일</th>
+                        <th>위치</th>
+                        <th>국가</th>
+                        <th>최대 수위(m)</th>
+                         <th>Runups</th>
+                        <th class="text-center">상세정보</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     <tr th:each="item : ${pageData.items}">
+                        <td th:text="${item.id ?: '-'} "></td>
+                        <td th:text="${item.year + '/' + item.month + '/' + item.day}"></td>
+                        <td th:text="${item.location ?: '-'}"></td>
+                        <td th:text="${item.country ?: '-'}"></td>
+                        <td th:text="${item.maximumWaterHeight != null ? #numbers.formatDecimal(item.maximumWaterHeight, 1, 2) : '-'}"></td>
+                        <td th:text="${item.numberOfRunup ?: '-'}"></td>
+                        <td class="text-center">
+                             <button class="btn btn-sm btn-outline-primary detail-btn"
+                                     th:attr="data-url=@{/lab3/detail/tsunami/{id}(id=${item.id})}">
+                                <i class="fas fa-external-link-alt me-1"></i> 보기
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+        </div>
+        
+        <!-- 페이징 네비게이션 (PageDTO 사용 및 검색 조건 유지 - 1 기반 페이지) -->
+        <nav aria-label="페이지 네비게이션" th:if="${pageData != null && pageData.totalPages > 1}" class="mt-4">
+            <ul class="pagination justify-content-center flex-wrap">
+                <!-- 처음으로 이동 (page=1) -->
+                <li class="page-item" th:classappend="${pageData.page == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/lab3/{type}(type=${activeTab}, page=1, size=${pageData.itemsPerPage},
+                                minDate=${criteria.minDate}, maxDate=${criteria.maxDate},
+                                minMagnitude=${criteria.minMagnitude}, maxMagnitude=${criteria.maxMagnitude},
+                                minElevation=${criteria.minElevation}, minVei=${criteria.minVei},
+                                minMaximumWaterHeight=${criteria.minMaximumWaterHeight}, minNumberOfRunup=${criteria.minNumberOfRunup},
+                                minLatitude=${criteria.minLatitude}, maxLatitude=${criteria.maxLatitude},
+                                minLongitude=${criteria.minLongitude}, maxLongitude=${criteria.maxLongitude}
+                                )}">&laquo;</a>
+                </li>
+                <!-- 이전 페이지로 이동 -->
+                <li class="page-item" th:classappend="${pageData.page == 1} ? 'disabled'">
+                     <a class="page-link" th:href="@{/lab3/{type}(type=${activeTab}, page=${pageData.page - 1}, size=${pageData.itemsPerPage},
+                                minDate=${criteria.minDate}, maxDate=${criteria.maxDate},
+                                minMagnitude=${criteria.minMagnitude}, maxMagnitude=${criteria.maxMagnitude},
+                                minElevation=${criteria.minElevation}, minVei=${criteria.minVei},
+                                minMaximumWaterHeight=${criteria.minMaximumWaterHeight}, minNumberOfRunup=${criteria.minNumberOfRunup},
+                                minLatitude=${criteria.minLatitude}, maxLatitude=${criteria.maxLatitude},
+                                minLongitude=${criteria.minLongitude}, maxLongitude=${criteria.maxLongitude}
+                                )}">&lsaquo;</a>
+                </li>
+
+                <!-- 페이지 번호 목록 (pageNum은 이미 1 기반) -->
+                <li class="page-item" th:each="pageNum : ${#numbers.sequence( T(java.lang.Math).max(1, pageData.page - 1), T(java.lang.Math).min(pageData.totalPages, pageData.page + 1) )}"
+                    th:classappend="${pageNum == pageData.page} ? 'active'">
+                    <a class="page-link" th:href="@{/lab3/{type}(type=${activeTab}, page=${pageNum}, size=${pageData.itemsPerPage},
+                                minDate=${criteria.minDate}, maxDate=${criteria.maxDate},
+                                minMagnitude=${criteria.minMagnitude}, maxMagnitude=${criteria.maxMagnitude},
+                                minElevation=${criteria.minElevation}, minVei=${criteria.minVei},
+                                minMaximumWaterHeight=${criteria.minMaximumWaterHeight}, minNumberOfRunup=${criteria.minNumberOfRunup},
+                                minLatitude=${criteria.minLatitude}, maxLatitude=${criteria.maxLatitude},
+                                minLongitude=${criteria.minLongitude}, maxLongitude=${criteria.maxLongitude}
+                                )}" th:text="${pageNum}"></a>
+                </li>
+
+                <!-- 다음 페이지로 이동 -->
+                <li class="page-item" th:classappend="${pageData.page == pageData.totalPages} ? 'disabled'">
+                     <a class="page-link" th:href="@{/lab3/{type}(type=${activeTab}, page=${pageData.page + 1}, size=${pageData.itemsPerPage},
+                                minDate=${criteria.minDate}, maxDate=${criteria.maxDate},
+                                minMagnitude=${criteria.minMagnitude}, maxMagnitude=${criteria.maxMagnitude},
+                                minElevation=${criteria.minElevation}, minVei=${criteria.minVei},
+                                minMaximumWaterHeight=${criteria.minMaximumWaterHeight}, minNumberOfRunup=${criteria.minNumberOfRunup},
+                                minLatitude=${criteria.minLatitude}, maxLatitude=${criteria.maxLatitude},
+                                minLongitude=${criteria.minLongitude}, maxLongitude=${criteria.maxLongitude}
+                                )}">&rsaquo;</a>
+                </li>
+                <!-- 마지막으로 이동 (page=totalPages) -->
+                 <li class="page-item" th:classappend="${pageData.page == pageData.totalPages} ? 'disabled'">
+                     <a class="page-link" th:href="@{/lab3/{type}(type=${activeTab}, page=${pageData.totalPages}, size=${pageData.itemsPerPage},
+                                minDate=${criteria.minDate}, maxDate=${criteria.maxDate},
+                                minMagnitude=${criteria.minMagnitude}, maxMagnitude=${criteria.maxMagnitude},
+                                minElevation=${criteria.minElevation}, minVei=${criteria.minVei},
+                                minMaximumWaterHeight=${criteria.minMaximumWaterHeight}, minNumberOfRunup=${criteria.minNumberOfRunup},
+                                minLatitude=${criteria.minLatitude}, maxLatitude=${criteria.maxLatitude},
+                                minLongitude=${criteria.minLongitude}, maxLongitude=${criteria.maxLongitude}
+                                )}">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <!-- 푸터 -->
+    <footer th:replace="fragments/common :: footer"></footer>
+    
+    <th:block th:replace="fragments/common :: scripts"></th:block>
+    
+    <!-- JavaScript: 상세보기 버튼 클릭 시 팝업 -->
+    <script th:inline="javascript">
+        function addDetailButtonListeners() {
+             document.querySelectorAll('.detail-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+                    if (url) {
+                        const popupWidth = 800, popupHeight = 600;
+                        const left = (screen.width / 2) - (popupWidth / 2);
+                        const top = (screen.height / 2) - (popupHeight / 2);
+                        const popupFeatures = `width=${popupWidth},height=${popupHeight},left=${left},top=${top},resizable=yes,scrollbars=yes`;
+                        window.open(url, 'detailPopup', popupFeatures);
+                    }
+                });
+            });
+        }
+        document.addEventListener('DOMContentLoaded', addDetailButtonListeners);
+    </script>
+</body>
+</html> 

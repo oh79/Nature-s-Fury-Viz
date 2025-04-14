@@ -60,11 +60,17 @@ body {
     color: #343a40;
 }
 
+/* 데이터 테이블 셀 글씨 크기 및 세로 정렬 통일 */
 .data-table td {
+    font-size: 0.9rem; /* 모든 테이블 셀 글씨 크기 통일 */
+    vertical-align: middle; /* 셀 내용 세로 중앙 정렬 */
+}
+
+/* .data-table td {
     padding: 15px;
     border-bottom: 1px solid #eee;
     vertical-align: middle;
-}
+} */
 
 .data-table tr:hover {
     background-color: #f8f9fa;
