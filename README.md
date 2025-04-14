@@ -1,10 +1,11 @@
 # 실행사진
+![image](https://github.com/user-attachments/assets/f29f7b36-4138-47b2-a847-2fe8e225b5cd)
 
-## 목록 및 검색
-
+## 필터 적용 결과
+![image](https://github.com/user-attachments/assets/9b7417de-ad40-4b3c-8419-51b4913fcb65)
 
 ## 상세 보기
-
+![image](https://github.com/user-attachments/assets/6f7b4a6b-a228-4200-b081-e0adc6de13e3)
 
 # Nature's Fury Viz - 자연재해 데이터 시각화 프로젝트 (Lab03)
 
