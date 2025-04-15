@@ -1,8 +1,8 @@
 # 실행사진
-![image](https://github.com/user-attachments/assets/f29f7b36-4138-47b2-a847-2fe8e225b5cd)
+![image](https://github.com/user-attachments/assets/2c967729-0b86-4397-840c-2187a2876ec3)
 
 ## 필터 적용 결과
-![image](https://github.com/user-attachments/assets/9b7417de-ad40-4b3c-8419-51b4913fcb65)
+![image](https://github.com/user-attachments/assets/5098e89c-1a4b-41c7-a6fa-2e1b9a39bafe)
 
 ## 상세 보기
 ![image](https://github.com/user-attachments/assets/6f7b4a6b-a228-4200-b081-e0adc6de13e3)
