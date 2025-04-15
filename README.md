@@ -59,7 +59,7 @@ src
 │   │       │   ├── Tsunami.java            # 쓰나미 데이터 DTO
 │   │       │   └── Volcano.java            # 화산 데이터 DTO
 │   │       └── service                     # 비즈니스 로직 및 외부 API 연동 서비스
-│   │           ├── DataService.java          # 데이터 서비스 공통 인터페이스 (삭제됨 - 각 서비스 인터페이스로 대체)
+│   │           ├── DataService.java          # 데이터 서비스 공통 인터페이스
 │   │           ├── EarthquakeService.java     # 지진 데이터 서비스 인터페이스
 │   │           ├── EarthquakeServiceImpl.java # 지진 데이터 서비스 구현체
 │   │           ├── TsunamiService.java      # 쓰나미 데이터 서비스 인터페이스
