@@ -111,22 +111,27 @@ graph TD
     style E fill:#f9f,stroke:#333,stroke-width:2px
 ```
 
-1.  **Client (Browser):** 사용자는 웹 브라우저를 통해 데이터 목록 조회, 검색 조건 입력, 상세 정보 보기 등을 요청합니다.
-2.  **Controller Layer (`HomeController`, `Lab3Controller`, `DetailViewController`):**
-    *   사용자의 HTTP 요청(GET)을 받아 해당 요청에 맞는 Service 메소드를 호출합니다.
-    *   목록/검색 요청 시 `SearchCriteria` 객체를 파라미터로 받습니다.
-    *   상세 정보 요청 시 URL 경로에서 데이터 ID를 추출합니다.
-    *   Service로부터 받은 데이터(DTO)를 Model 객체에 담아 View(Thymeleaf)에 전달합니다.
-3.  **Service Layer (`*ServiceImpl`):**
-    *   Controller로부터 전달받은 `SearchCriteria` 또는 ID를 기반으로 NOAA API에 요청할 URL을 동적으로 구성합니다. (`UriComponentsBuilder` 사용)
-    *   `RestTemplate`을 이용하여 NOAA API를 호출하고, 응답(JSON)을 해당 `*ApiResponse` DTO 객체로 변환합니다.
-    *   API 응답 데이터를 필요한 형태(`PageDTO` 또는 개별 데이터 DTO)로 가공합니다.
-    *   (참고: API가 지원하지 않는 상세 조건 필터링은 Service 단에서 추가로 수행될 수 있습니다.)
-    *   처리된 데이터를 Controller에 반환합니다.
-4.  **View Layer (`lab3.html`, `detailView.html`):**
-    *   Thymeleaf 템플릿 엔진을 사용하여 Controller로부터 받은 데이터를 HTML 페이지에 동적으로 렌더링합니다.
-    *   Bootstrap 및 커스텀 CSS를 사용하여 UI를 구성합니다.
-    *   `lab3.html`에서는 JavaScript를 사용하여 '보기' 버튼 클릭 시 `window.open()`으로 상세 정보 팝업 창을 띄웁니다.
+## 클래스 관계 및 디자인 패턴
+
+### 클래스 관계
+
+*   **API 응답 DTO:**
+    *   `EarthquakeApiResponse`, `TsunamiApiResponse`, `VolcanoApiResponse` 클래스는 공통 페이징 구조를 정의하는 `BaseApiResponse<T>`를 상속받습니다.
+    *   각 클래스는 제네릭 타입 `T`에 해당하는 특정 데이터 DTO (`Earthquake`, `Tsunami`, `Volcano`)를 사용합니다.
+*   **서비스 인터페이스:**
+    *   `EarthquakeService`, `TsunamiService`, `VolcanoService` 인터페이스는 공통 데이터 조회 메소드(`getData`, `getDataById`)를 정의하는 `DataService<T>` 인터페이스를 상속받습니다.
+    *   이를 통해 서비스 계층의 구조적 일관성을 유지하고 코드 중복을 줄입니다.
+*   **서비스 구현체:**
+    *   `*ServiceImpl` 클래스들은 각각 해당하는 `*Service` 인터페이스를 구현합니다.
+    *   `RestTemplate`과 `UriComponentsBuilder`를 사용하여 외부 NOAA API와 통신하고, 응답 데이터를 처리하여 컨트롤러에 전달하는 비즈니스 로직을 담당합니다.
+
+### 주요 디자인 패턴
+
+*   **DTO (Data Transfer Object):** 계층 간 데이터 전송을 위해 사용됩니다 (`PageDTO`, `SearchCriteria`, `Volcano`, `Earthquake`, `Tsunami`, `*ApiResponse` 등).
+*   **Service Layer:** 비즈니스 로직을 컨트롤러와 분리하여 관리합니다 (`*Service` 인터페이스 및 `*ServiceImpl` 구현체).
+*   **Dependency Injection (DI):** Spring의 `@Autowired`를 통해 서비스 간 또는 컨트롤러와 서비스 간의 의존성을 외부(Spring 컨테이너)에서 주입받아 결합도를 낮춥니다.
+*   **Builder Pattern:** 서비스 구현체(`*ServiceImpl`) 내에서 `UriComponentsBuilder`를 사용하여 API 요청 URL을 생성합니다.
+    *   **사용 이유:** 여러 개의 선택적 쿼리 파라미터(검색 조건)를 조합하여 URL을 동적으로 생성해야 하는 경우, 단순 문자열 연결 방식보다 훨씬 가독성이 좋고 오류 발생 가능성이 낮습니다. `queryParamIfPresent`와 같은 메소드를 통해 조건부 파라미터 추가가 용이하며, URL 인코딩을 자동으로 처리해주는 장점이 있습니다.
 
 ## 요청 처리 흐름 (목록 검색 및 상세보기 팝업)
 
