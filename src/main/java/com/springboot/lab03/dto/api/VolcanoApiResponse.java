@@ -1,6 +1,7 @@
 package com.springboot.lab03.dto.api;
 
 import com.springboot.lab03.dto.Volcano;
+
 import lombok.Data;
 
 /**
