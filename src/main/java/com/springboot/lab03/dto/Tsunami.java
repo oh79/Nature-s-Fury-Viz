@@ -2,36 +2,37 @@ package com.springboot.lab03.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true) // 알 수 없는 속성은 무시
+@JsonIgnoreProperties(ignoreUnknown = true) // 알 수 없는 JSON 속성 무시
 public class Tsunami {
 
-    @JsonProperty("id") // API 응답의 id 필드 매핑
-    private int id; // 상세보기를 위한 ID (int 타입으로 변경)
+    @JsonProperty("id") // JSON "id" 매핑
+    private int id; // 쓰나미 ID
 
-    private int year; // API: year
-    private int month; // API: month
-    private int day; // API: day
+    private int year; // 발생 년
+    private int month; // 발생 월
+    private int day; // 발생 일
 
-    @JsonProperty("eventValidity") // API: eventValidity 필드 매핑 (숫자형)
-    private int tsunamiEventValidity; // 쓰나미 이벤트 유효성 (int 타입으로 변경)
+    @JsonProperty("eventValidity") // JSON "eventValidity" 매핑
+    private int tsunamiEventValidity; // 이벤트 유효성 코드
 
-    @JsonProperty("causeCode") // API: causeCode 필드 매핑 (숫자형)
-    private int tsunamiCauseCode; // 쓰나미 원인 코드 (int 타입으로 변경)
+    @JsonProperty("causeCode") // JSON "causeCode" 매핑
+    private int tsunamiCauseCode; // 원인 코드
 
-    private String country; // API: country
+    private String country; // 국가
 
-    @JsonProperty("locationName") // API: locationName 필드를 location으로 매핑
-    private String location;
+    @JsonProperty("locationName") // JSON "locationName" 매핑
+    private String location; // 위치명
 
-    private Double latitude; // API: latitude
-    private Double longitude; // API: longitude
+    private Double latitude; // 위도
+    private Double longitude; // 경도
 
-    @JsonProperty("maxWaterHeight") // API: maxWaterHeight 필드 매핑
-    private Double maximumWaterHeight; // 최대 수위 (미터 단위 추정)
+    @JsonProperty("maxWaterHeight") // JSON "maxWaterHeight" 매핑
+    private Double maximumWaterHeight; // 최대 수위 (m)
 
-    @JsonProperty("numRunups") // API: numRunups 필드 매핑
+    @JsonProperty("numRunups") // JSON "numRunups" 매핑
     private Integer numberOfRunup; // Runup 횟수
 }

@@ -113,7 +113,7 @@
                 </div>
                 
                 <!-- 검색 버튼 -->
-                <div class="col-12 col-lg-3 d-flex align-items-end">
+                <div class="col-12 col-lg-12 d-flex">
                     <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-1"></i> 검색하기</button>
                 </div>
             </div>
@@ -267,7 +267,7 @@
                                 minMaximumWaterHeight=${criteria.minMaximumWaterHeight}, minNumberOfRunup=${criteria.minNumberOfRunup},
                                 minLatitude=${criteria.minLatitude}, maxLatitude=${criteria.maxLatitude},
                                 minLongitude=${criteria.minLongitude}, maxLongitude=${criteria.maxLongitude}
-                                )}">&laquo;</a>
+                                )}"><i class="fas fa-angle-double-left"></i></a>
                 </li>
                 <!-- 이전 페이지로 이동 -->
                 <li class="page-item" th:classappend="${pageData.page == 1} ? 'disabled'">
@@ -278,7 +278,7 @@
                                 minMaximumWaterHeight=${criteria.minMaximumWaterHeight}, minNumberOfRunup=${criteria.minNumberOfRunup},
                                 minLatitude=${criteria.minLatitude}, maxLatitude=${criteria.maxLatitude},
                                 minLongitude=${criteria.minLongitude}, maxLongitude=${criteria.maxLongitude}
-                                )}">&lsaquo;</a>
+                                )}"><i class="fas fa-angle-left"></i></a>
                 </li>
 
                 <!-- 페이지 번호 목록 (pageNum은 이미 1 기반) -->
@@ -303,7 +303,7 @@
                                 minMaximumWaterHeight=${criteria.minMaximumWaterHeight}, minNumberOfRunup=${criteria.minNumberOfRunup},
                                 minLatitude=${criteria.minLatitude}, maxLatitude=${criteria.maxLatitude},
                                 minLongitude=${criteria.minLongitude}, maxLongitude=${criteria.maxLongitude}
-                                )}">&rsaquo;</a>
+                                )}"><i class="fas fa-angle-right"></i></a>
                 </li>
                 <!-- 마지막으로 이동 (page=totalPages) -->
                  <li class="page-item" th:classappend="${pageData.page == pageData.totalPages} ? 'disabled'">
@@ -314,7 +314,7 @@
                                 minMaximumWaterHeight=${criteria.minMaximumWaterHeight}, minNumberOfRunup=${criteria.minNumberOfRunup},
                                 minLatitude=${criteria.minLatitude}, maxLatitude=${criteria.maxLatitude},
                                 minLongitude=${criteria.minLongitude}, maxLongitude=${criteria.maxLongitude}
-                                )}">&raquo;</a>
+                                )}"><i class="fas fa-angle-double-right"></i></a>
                 </li>
             </ul>
         </nav>

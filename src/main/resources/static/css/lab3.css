@@ -211,3 +211,31 @@ body {
     background-color: #0d6efd;
     border-color: #0d6efd;
 }
+
+/* 페이지네이션 맨 처음/마지막 버튼 모양 조정 */
+.pagination .page-item:first-child .page-link {
+    border-top-left-radius: var(--bs-pagination-border-radius);
+    border-bottom-left-radius: var(--bs-pagination-border-radius);
+    border-top-right-radius: 0; /* 오른쪽 위 모서리 각지게 */
+    border-bottom-right-radius: 0; /* 오른쪽 아래 모서리 각지게 */
+}
+
+.pagination .page-item:last-child .page-link {
+    border-top-right-radius: var(--bs-pagination-border-radius);
+    border-bottom-right-radius: var(--bs-pagination-border-radius);
+    border-top-left-radius: 0; /* 왼쪽 위 모서리 각지게 */
+    border-bottom-left-radius: 0; /* 왼쪽 아래 모서리 각지게 */
+}
+
+/* 추가: 활성(active) 및 비활성(disabled) 상태에서도 모양 유지 */
+.pagination .page-item.active:first-child .page-link,
+.pagination .page-item.disabled:first-child .page-link {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.pagination .page-item.active:last-child .page-link,
+.pagination .page-item.disabled:last-child .page-link {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}

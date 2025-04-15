@@ -2,6 +2,7 @@ package com.springboot.lab03.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +13,6 @@ import com.springboot.lab03.dto.Volcano;
 import com.springboot.lab03.service.EarthquakeService;
 import com.springboot.lab03.service.TsunamiService;
 import com.springboot.lab03.service.VolcanoService;
-
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import lombok.extern.slf4j.Slf4j;
 
